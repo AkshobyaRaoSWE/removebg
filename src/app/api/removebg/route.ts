@@ -1,11 +1,21 @@
+export const runtime = "nodejs";
 import axios from "axios";
 
 export async function POST(req: Request) {
   try {
-    const { imageUrl } = await req.json();
+    const formData = await req.formData();
+    const type = formData.get("type");
     const form = new FormData();
 
-    form.append("image_url", imageUrl);
+    if (type === "url") {
+      form.append("image_url", formData.get("image_url") as string);
+    } else {
+      const file = formData.get("image_file") as File;
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const blob = new Blob([buffer], { type: file.type });
+      form.append("image_file", blob, file.name);
+    }
+
     form.append("size", "auto");
 
     const response = await axios.post(
