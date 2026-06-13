@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Remove BG
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-First, run the development server:
+A free, open-source background remover. Drop in an image (by file or URL) and get back a
+transparent PNG. It is a thin, clean front end over the [remove.bg](https://www.remove.bg)
+API, with the API key kept server-side so it never reaches the browser.
+
+## Features
+
+- Accepts either an uploaded file or an image URL (one or the other, mutually exclusive in
+  the UI).
+- Returns a transparent PNG, shown inline with a download button.
+- The remove.bg key lives in a server-side API route, not in client code.
+
+## How it works
+
+The page posts the image to `POST /api/removebg`, which forwards it to
+`https://api.remove.bg/v1.0/removebg` with the `REMOVEBG_API_KEY` header and `size=auto`,
+then streams the resulting PNG back to the browser as a blob.
+
+## Tech stack
+
+- **Next.js (App Router) + React + TypeScript**
+- **Tailwind CSS + daisyUI**
+- **axios** to call the remove.bg API from the server route
+
+## Run it
+
+This app needs a remove.bg API key. Get a free key at
+[remove.bg/api](https://www.remove.bg/api), then:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+echo "REMOVEBG_API_KEY=your_key_here" > .env.local
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app/
+  page.tsx                  # file/URL input, result preview, download
+  api/removebg/route.ts     # server proxy to the remove.bg API
+```
